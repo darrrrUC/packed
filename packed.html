@@ -49,18 +49,57 @@ var formatedJsonObject =
 
 var currentRegion = "";
 var nameCounter = 0;
-var motherArray = [];
-var childArray = [];
-
+var startCountingArrays = false;
+var currentArray = 0;
+var parsedRegions = [];
 for(var i = 0; i < json.features.length; i++)
 {
+
   //get region so we know when to start bulding our next object according to our valid json structure
   if (json.features[i].properties.Region != currentRegion) 
   {
     currentRegion = json.features[i].properties.Region;
-    motherArray[nameCounter] = {name : json.features[i].properties.Region, color : "#fff"};
+    
 
+    formatedJsonObject.children[nameCounter] = {name : json.features[i].properties.Region, color : "#fff", children : []};
+
+formatedJsonObject.children[nameCounter].children.push(
+  		{name : json.features[i].properties.Bransch,
+  		 size : json.features[i].properties.Värde	
+
+  		}
+  		);
+	
+
+	if (startCountingArrays == true) 
+	{
+		currentArray++;
+	}
+	else if (startCountingArrays == false) 
+	{
+		currentArray = i;
+		startCountingArrays = true;
+	}
+	
+    
     nameCounter++;
+
+
+  }
+
+  else 
+  {
+
+  	console.log("Current array is: " + currentArray);
+ 	 	formatedJsonObject.children[currentArray].children.push(
+  		{name : json.features[i].properties.Bransch,
+  		 size : json.features[i].properties.Värde	
+
+  		}
+  		);
+
+
+
   }
   
   
