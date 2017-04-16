@@ -20,7 +20,7 @@
 }
 
 .label {
-  font: 11px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font: 22px "Helvetica Neue", Helvetica, Arial, sans-serif;
   text-anchor: middle;
   text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff, 0 -1px 0 #fff;
 }
@@ -38,7 +38,7 @@
 <script>
 
 
-var foo = $.getJSON("test.json", function(json) {
+var foo = $.getJSON("kommuner.json", function(json) {
 
 var formatedJsonObject = 
 { 
@@ -48,10 +48,13 @@ var formatedJsonObject =
 };
 
 var currentRegion = "";
+var currentYear = 0;
 var nameCounter = 0;
 var startCountingArrays = false;
 var currentArray = 0;
 var parsedRegions = [];
+var combineByYear = [];
+
 for(var i = 0; i < json.features.length; i++)
 {
 
@@ -59,7 +62,7 @@ for(var i = 0; i < json.features.length; i++)
   if (json.features[i].properties.Region != currentRegion) 
   {
     currentRegion = json.features[i].properties.Region;
-    
+    combineByYear.push({name: currentRegion, year : json.features[i].properties.År, childIndex : nameCounter});
 
     formatedJsonObject.children[nameCounter] = {name : json.features[i].properties.Region, color : "#fff", children : []};
 
@@ -108,7 +111,7 @@ formatedJsonObject.children[nameCounter].children.push(
 
 
 console.log(formatedJsonObject);
-  
+console.log(combineByYear);
 var svg = d3.select("svg"),
     margin = 20,
     diameter = +svg.attr("width"),
@@ -151,7 +154,13 @@ var pack = d3.pack()
       .attr("class", "label")
       .style("fill-opacity", function(d) { return d.parent === root ? 1 : 0; })
       .style("display", function(d) { return d.parent === root ? "inline" : "none"; })
-      .text(function(d) { return d.data.name; });
+      .text(function(d) { 
+    
+      	if (d.data.size == undefined) 
+      	{
+      		return d.data.name;
+      	}
+      	return d.data.name + d.data.size; });
 
   var node = g.selectAll("circle,text");
 
