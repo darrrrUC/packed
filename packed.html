@@ -65,7 +65,8 @@ for(var i = 0; i < json.features.length; i++)
 
 formatedJsonObject.children[nameCounter].children.push(
   		{name : json.features[i].properties.Bransch,
-  		 size : json.features[i].properties.Värde	
+  		 size : json.features[i].properties.Värde,
+  		 color : json.features[i].properties.Hex
 
   		}
   		);
@@ -89,11 +90,10 @@ formatedJsonObject.children[nameCounter].children.push(
 
   else 
   {
-
-  	console.log("Current array is: " + currentArray);
  	 	formatedJsonObject.children[currentArray].children.push(
   		{name : json.features[i].properties.Bransch,
-  		 size : json.features[i].properties.Värde	
+  		 size : json.features[i].properties.Värde,
+  		 color : json.features[i].properties.Hex	
 
   		}
   		);
@@ -105,6 +105,7 @@ formatedJsonObject.children[nameCounter].children.push(
   
   
 }
+
 
 console.log(formatedJsonObject);
   
@@ -122,9 +123,9 @@ var pack = d3.pack()
     .size([diameter - margin, diameter - margin])
     .padding(2);
 
-d3.json("test.json", function(error, root) {
-  if (error) throw error;
-
+//d3.json("test.json", function(error, root) {
+  //if (error) throw error;
+  var root = formatedJsonObject;
   root = d3.hierarchy(root)
       .sum(function(d) { return d.size; })
       .sort(function(a, b) { return b.value - a.value; });
@@ -182,7 +183,7 @@ d3.json("test.json", function(error, root) {
     node.attr("transform", function(d) { return "translate(" + (d.x - v[0]) * k + "," + (d.y - v[1]) * k + ")"; });
     circle.attr("r", function(d) { return d.r * k; });
   }
-});
+//});//end of getjson
 
 
 
