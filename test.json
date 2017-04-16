@@ -1,0 +1,10 @@
+{
+"type": "FeatureCollection",
+                                                                                                                                  
+"features": [
+{ "type": "Feature", "properties": { "Bransch": "okänd verksamhet", "Region": "Ludvika", "År": 2015, "Värde": 85, "Hex": "#ebe2e2", "RGB": "rgb(235, 226, 226)" }, "geometry": null },
+{ "type": "Feature", "properties": { "Bransch": "jordbruk, skogsbruk och fiske", "Region": "Ludvika", "År": 2015, "Värde": 200, "Hex": "#87f7b4", "RGB": "rgb(135, 247, 180)" }, "geometry": null },
+{ "type": "Feature", "properties": { "Bransch": "tillverkning och utvinning", "Region": "Ludvika", "År": 2015, "Värde": 4063, "Hex": "#36e60a", "RGB": "rgb(54, 230, 10)" }, "geometry": null },
+{ "type": "Feature", "properties": { "Bransch": "okänd verksamhet", "Region": "Falun", "År": 2015, "Värde": 85, "Hex": "#ebe2e2", "RGB": "rgb(235, 226, 226)" }, "geometry": null }
+]
+}

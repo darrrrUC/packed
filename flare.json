@@ -1,0 +1,31 @@
+{
+ "name": "Dalarna", "color" : "#fff",
+ "children": 
+ [
+
+  {
+   "name": "Mora", "color" : "#fff",
+   "children": [
+
+      {"name": "IT och kommunikation", "size": 3938, "color" : "#000080"},
+      {"name": "Energi och miljö", "size": 3812, "color" : "#10D0FA"},
+      {"name": "Kultur, fritid och nöje", "size": 6714, "color" : "#FF8080"},
+      {"name": "Offentlig förvaltning", "size": 743, "color" : "#FCAC34"}
+
+ ]
+ },
+
+
+
+ {
+  "name" : "Falun", "color" : "#fff",
+  "children" : [
+      {"name": "IT och kommunikation", "size": 738, "color" : "#000080"},
+      {"name": "Energi och miljö", "size": 12812, "color" : "#10D0FA"},
+      {"name": "Kultur, fritid och nöje", "size": 4734, "color" : "#FF8080  "},
+      {"name": "Offentlig förvaltning", "size": 173, "color" : "#FCAC34"}
+  ]
+ }
+
+]
+}
