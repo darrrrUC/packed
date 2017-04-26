@@ -49,27 +49,39 @@ var formatedJsonObject =
 
 var currentRegion = "";
 var currentYear = 0;
+var currentYear = 0;
 var nameCounter = 0;
 var startCountingArrays = false;
 var currentArray = 0;
-var parsedRegions = [];
-var combineByYear = [];
+var finalJsonObject = 
+{ 
+  name : "Dalarna", 
+  color : "#fff", 
+  children : [] 
+};
+var isBusy = {};
 
-for(var i = 0; i < json.features.length; i++)
+for(var i = 0; i < json.length; i++)
 {
 
   //get region so we know when to start bulding our next object according to our valid json structure
-  if (json.features[i].properties.Region != currentRegion) 
+  if (json[i].Region != currentRegion) 
   {
-    currentRegion = json.features[i].properties.Region;
-    combineByYear.push({name: currentRegion, year : json.features[i].properties.År, childIndex : nameCounter});
+    currentRegion = json[i].Region;
+    currentYear = json[i].År;
+    //if we havent pushed this region to our object we add it so we can filter it by year later on
+ 
+    formatedJsonObject.children[nameCounter] = {name : json[i].Region, color : "#fff", year : currentYear, children : []};
 
-    formatedJsonObject.children[nameCounter] = {name : json.features[i].properties.Region, color : "#fff", children : []};
+    isBusy[json[i].Region] = currentArray;
+
+
+    
 
 formatedJsonObject.children[nameCounter].children.push(
-  		{name : json.features[i].properties.Bransch,
-  		 size : json.features[i].properties.Värde,
-  		 color : json.features[i].properties.Hex
+  		{name : json[i].Bransch,
+  		 size : json[i].Värde,
+  		 color : json[i].Hex
 
   		}
   		);
@@ -93,25 +105,56 @@ formatedJsonObject.children[nameCounter].children.push(
 
   else 
   {
+  	
+
  	 	formatedJsonObject.children[currentArray].children.push(
-  		{name : json.features[i].properties.Bransch,
-  		 size : json.features[i].properties.Värde,
-  		 color : json.features[i].properties.Hex	
+  		{name : json[i].Bransch,
+  		 size : json[i].Värde,
+  		 color : json[i].Hex
 
   		}
   		);
-
-
-
   }
   
-  
-  
 }
+/*
+var sortedFormatedJsonObject = formatedJsonObject.children.sort(function(a,b){
+	var name1 = a.name.toUpperCase();
+	var name2 = b.name.toUpperCase();
+	if (name1 < name2) {
+		return -1;
+	}
+	if (name1 > name2) {
+		return 1;
+	}
+	return 0;
+});
+
+(function(){
+	var currentRegion = "";
+	var currentIndex = 0;
+	for(var i = 0; i < sortedFormatedJsonObject.length; i++){
+		if (sortedFormatedJsonObject[i].name != currentRegion)  {
+			currentRegion = sortedFormatedJsonObject[i].name;
+			currentIndex = i;
+
+			 finalJsonObject.children[currentIndex] = {name : json[i].Region, color : "#fff", year : currentYear, children : []};
 
 
-console.log(formatedJsonObject);
-console.log(combineByYear);
+
+
+		
+		}
+
+
+	}
+
+	
+
+	
+
+}())*/
+console.log(isBusy);
 var svg = d3.select("svg"),
     margin = 20,
     diameter = +svg.attr("width"),
