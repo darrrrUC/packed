@@ -111,8 +111,8 @@ for(var i = 0; i < formatedJsonObject.children.length; i++)
           console.log(formatedJsonObject.children[i]);
           formatedJsonObject.children[i].children[years].children.push({
             name   : json[x].Bransch, 
-            size   :  738, 
-            color  : "#000080"
+            size   : json[x].Värde, 
+            color  : json[x].Hex
           });
         };
     }   
