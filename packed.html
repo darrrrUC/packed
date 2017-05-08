@@ -4,6 +4,7 @@
 
 .node {
   cursor: pointer;
+
 }
 
 .node:hover {
@@ -13,10 +14,21 @@
 
 .node--leaf {
   fill: white;
+
 }
+
 
 .node--mora {
   fill: red;
+}
+
+.node--border {
+	  stroke: #c6c6c6;
+  stroke-width: 1.5px;
+}
+
+.node--remover {
+	display:none;
 }
 
 .label {
@@ -29,10 +41,15 @@
 .node--root,
 .node--leaf {
   pointer-events: none;
+
+}
+
+#bg {
+	background-color: #fff !important;
 }
 
 </style>
-<svg width="960" height="960"></svg>
+<svg width="960" height="960" id="bg"></svg>
 <script src="d3.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script>
@@ -57,16 +74,24 @@ var currentArray = 0;
 var regionArrayNumber = 0;
 var isBusyRegion = {};
 var isBusyYear = {};
+var categories = {};
+
+var flag = false;
 
 for(var i = 0; i < json.length; i++)
 {
+  if (!(json[i].Bransch in categories)) 
+  {
+  	categories[json[i].Bransch] = true;
+  }
+  
   if (!(json[i].Region in isBusyRegion)) {
   isBusyRegion[json[i].Region] = regionArrayNumber;
  
   formatedJsonObject.children.push(
   {
     name     : json[i].Region,
-    color    : "#22A62F",
+    color    : "#fff",
     children : []
   });
     
@@ -89,7 +114,7 @@ for(var i = 0; i < json.length; i++)
     formatedJsonObject.children[i].children.push(
     {
       name     : year, 
-      color    : "#8B3D3D",
+      color    : "#fff",
       size     : 3000,
       children : []
     });
@@ -108,11 +133,12 @@ for(var i = 0; i < formatedJsonObject.children.length; i++)
     {
       if (formatedJsonObject.children[i].name == json[x].Region && formatedJsonObject.children[i].children[years].name  == json[x].År.toString()) 
         {
-          console.log(formatedJsonObject.children[i]);
           formatedJsonObject.children[i].children[years].children.push({
             name   : json[x].Bransch, 
             size   : json[x].Värde, 
-            color  : json[x].Hex
+            color  : json[x].Hex,
+            children : [],
+            isLast : true
           });
         };
     }   
@@ -122,9 +148,15 @@ for(var i = 0; i < formatedJsonObject.children.length; i++)
 
 
 
-console.log(formatedJsonObject);
+console.log(categories);
 
-
+//tooltop to display data on hover
+var tooltip = d3.select("body")
+    .append("div")
+    .style("position", "absolute")
+    .style("z-index", "10")
+    .style("visibility", "hidden")
+    .text("a simple tooltip");
 
 var svg = d3.select("svg"),
     margin = 20,
@@ -157,10 +189,56 @@ var pack = d3.pack()
     .enter().append("circle")
     //upda<te function in attr. to correspond to circle color?
       .attr("class", function(d) {
+      	if (d.data.children && d.data.children.length < 1) {
+      		return "node-remover"
+      	}
+      	else if (d.data.children && d.data.children.length < 10) 
+      	{
+      		return "node--border"
+      	}
         return d.parent ? d.children ? "node" : "node node--leaf" : "node node--root"; })
        .style("fill", function(d) { return d.data.color; })
-      //.style("fill", function(d) { return d.children ? color(d.depth) : null; })
-      .on("click", function(d) { if (focus !== d) zoom(d), d3.event.stopPropagation(); });
+       //hover for labels
+
+       	.on("mouseover", function(d){
+       		console.log();
+       	
+      		return tooltip.style("visibility", "visible");
+      	
+       		
+       	
+       	})
+       	.on("mousemove", function(){return tooltip.style("top", (event.pageY-10)+"px").style("left",(event.pageX+10)+"px");})
+       		.on("mouseout", function(){return tooltip.style("visibility", "hidden");})
+       		//end of hover for labels
+      .on("click", function(d) { 
+      	if (d.data.isLast)
+      	{
+      		console.log("clicking on last");
+			
+			if (focus !== d && !flag){
+      			zoom(d.parent), d3.event.stopPropagation();
+      			flag = true;
+      			console.log("flag: " + flag);
+      			console.log("focus: " + focus!==d);
+      		}
+
+
+      		else if (focus !== d && flag) {
+      			console.log("enter");
+      			zoom(d.parent.parent), d3.event.stopPropagation();
+      			flag = false;
+      		}
+
+      	
+      	}
+      	else if (!(d.data.isLast)) 
+      	{
+      		if (focus !== d) zoom(d), d3.event.stopPropagation(); 
+      	}
+      	
+      	
+      });
 
   var text = g.selectAll("text")
     .data(nodes)
