@@ -12,6 +12,11 @@
   stroke-width: 1.5px;
 }
 
+.node--fakeHover {
+	 stroke: #000;
+  stroke-width: 1.5px;
+}
+
 .node--leaf {
   fill: white;
 
@@ -32,7 +37,7 @@
 }
 
 .label {
-  font: 22px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font: 26px "Helvetica Neue", Helvetica, Arial, sans-serif;
   text-anchor: middle;
   text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff, 0 -1px 0 #fff;
 }
@@ -44,12 +49,25 @@
 
 }
 
+.hover-text{
+	font-size: 32px;
+	text-align: center;
+	text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff, 0 -1px 0 #fff;
+}
+
 #bg {
 	background-color: #fff !important;
 }
 
+.node--root {
+	margin-top:-500px;
+}
+
+g {
+	margin-top: -200px;
+}
 </style>
-<svg width="960" height="960" id="bg"></svg>
+<svg width="1400" height="1400" id="bg"></svg>
 <script src="d3.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script>
@@ -76,6 +94,8 @@ var isBusyRegion = {};
 var isBusyYear = {};
 var categories = {};
 
+//this flag is true when we are zoomed in on last child object
+//so we can display onhover effects and know where to zoom out
 var flag = false;
 
 for(var i = 0; i < json.length; i++)
@@ -146,10 +166,6 @@ for(var i = 0; i < formatedJsonObject.children.length; i++)
 
 }
 
-
-
-console.log(categories);
-
 //tooltop to display data on hover
 var tooltip = d3.select("body")
     .append("div")
@@ -159,9 +175,14 @@ var tooltip = d3.select("body")
     .text("a simple tooltip");
 
 var svg = d3.select("svg"),
-    margin = 20,
-    diameter = +svg.attr("width"),
-    g = svg.append("g").attr("transform", "translate(" + diameter / 2 + "," + diameter / 2 + ")");
+    margin = 10,
+    diameter = 700,
+    g = svg.append("g").attr("transform", "translate(" + 750 + "," + 370 + ")");
+
+    var circle = svg.append("circle")
+                       .attr("cx", 30)
+                       .attr("cy", 30)
+                        .attr("r", 20);
 
 var color = d3.scaleLinear()
     .domain([-1, 5])
@@ -201,20 +222,21 @@ var pack = d3.pack()
        //hover for labels
 
        	.on("mouseover", function(d){
-       		console.log();
-       	
-      		return tooltip.style("visibility", "visible");
-      	
-       		
-       	
+       		if (d.data.isLast && flag) 
+       		{
+       			tooltip._groups[0][0].innerHTML = 
+       			"<p class='hover-text'>" + d.data.name + "<br/>" + d.data.size + "</p>";
+       			return tooltip.style("visibility", "visible");
+       		}
+      		
        	})
        	.on("mousemove", function(){return tooltip.style("top", (event.pageY-10)+"px").style("left",(event.pageX+10)+"px");})
        		.on("mouseout", function(){return tooltip.style("visibility", "hidden");})
        		//end of hover for labels
+      
       .on("click", function(d) { 
       	if (d.data.isLast)
       	{
-      		console.log("clicking on last");
 			
 			if (focus !== d && !flag){
       			zoom(d.parent), d3.event.stopPropagation();
@@ -234,7 +256,8 @@ var pack = d3.pack()
       	}
       	else if (!(d.data.isLast)) 
       	{
-      		if (focus !== d) zoom(d), d3.event.stopPropagation(); 
+      		if (focus !== d) zoom(d), d3.event.stopPropagation();
+      		flag = false;
       	}
       	
       	
@@ -247,12 +270,16 @@ var pack = d3.pack()
       .style("fill-opacity", function(d) { return d.parent === root ? 1 : 0; })
       .style("display", function(d) { return d.parent === root ? "inline" : "none"; })
       .text(function(d) { 
-    
-      	if (d.data.size == undefined) 
+    	
+      	if (d.data.size == undefined && (!(d.data.isLast))) 
       	{
       		return d.data.name;
       	}
-      	return d.data.name + d.data.size; });
+      	if ((d.data.isLast))
+      	{
+      		return;
+      	}
+      	return d.data.name; });
 
   var node = g.selectAll("circle,text");
 
