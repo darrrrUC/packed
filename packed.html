@@ -67,10 +67,14 @@ g {
 	margin-top: -200px;
 }
 </style>
-<svg width="1400" height="1400" id="bg"></svg>
+<svg width="1400" height="1400" id="bg">
+
+
+</svg>
 <script src="d3.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script>
+
 
 
 var foo = $.getJSON("kommuner.json", function(json) {
@@ -176,13 +180,29 @@ var tooltip = d3.select("body")
 
 var svg = d3.select("svg"),
     margin = 10,
-    diameter = 700,
-    g = svg.append("g").attr("transform", "translate(" + 750 + "," + 370 + ")");
+    diameter = 800,
+    g = svg.append("g").attr("transform", "translate(" + 650 + "," + 370 + ")");
 
-    var circle = svg.append("circle")
-                       .attr("cx", 30)
-                       .attr("cy", 30)
-                        .attr("r", 20);
+var jsonCircles = [
+ { "x_axis": 60, "y_axis": 50, "radius": 3.5, "color" : "green" },
+ { "x_axis": 60, "y_axis": 110, "radius": 7.437292357509746, "color" : "purple"},
+ { "x_axis": 60, "y_axis": 175, "radius": 10.517919719324052, "color" : "red"},
+ { "x_axis": 60, "y_axis": 250, "radius": 18.217571343799843, "color" : "red"},
+  { "x_axis": 60, "y_axis": 340, "radius": 25.38326219240313, "color" : "red"} ];
+
+ var circles = svg.selectAll("circle")
+                .data(jsonCircles)
+                .enter()
+                .append("circle");
+
+                var circleAttributes = circles
+                      .attr("cx", function (d) { return d.x_axis; })
+                     .attr("cy", function (d) { return d.y_axis; })
+                      .attr("r", function (d) { return d.radius; })
+                      .attr("class", function() {return "sizeCircle"})
+                   .style("fill", function(d) { return d.color; });
+
+
 
 var color = d3.scaleLinear()
     .domain([-1, 5])
@@ -234,7 +254,12 @@ var pack = d3.pack()
        		.on("mouseout", function(){return tooltip.style("visibility", "hidden");})
        		//end of hover for labels
       
-      .on("click", function(d) { 
+      .on("click", function(d) {
+
+      	var all = document.getElementsByClassName("sizeCircle");
+      	for (var i = 0; i < all.length; i++) {
+  all[i].style.fill = 'blue';
+}
       	if (d.data.isLast)
       	{
 			
