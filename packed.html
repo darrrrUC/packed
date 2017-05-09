@@ -2,70 +2,70 @@
 <meta charset="utf-8">
 <style>
 
-.node {
-  cursor: pointer;
+	.node {
+		cursor: pointer;
 
-}
+	}
 
-.node:hover {
-  stroke: #000;
-  stroke-width: 1.5px;
-}
+	.node:hover {
+		stroke: #000;
+		stroke-width: 1.5px;
+	}
 
-.node--fakeHover {
-	 stroke: #000;
-  stroke-width: 1.5px;
-}
+	.node--fakeHover {
+		stroke: #000;
+		stroke-width: 1.5px;
+	}
 
-.node--leaf {
-  fill: white;
+	.node--leaf {
+		fill: white;
 
-}
+	}
 
 
-.node--mora {
-  fill: red;
-}
+	.node--mora {
+		fill: red;
+	}
 
-.node--border {
-	  stroke: #c6c6c6;
-  stroke-width: 1.5px;
-}
+	.node--border {
+		stroke: #c6c6c6;
+		stroke-width: 1.5px;
+	}
 
-.node--remover {
-	display:none;
-}
+	.node--remover {
+		display:none;
+	}
 
-.label {
-  font: 26px "Helvetica Neue", Helvetica, Arial, sans-serif;
-  text-anchor: middle;
-  text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff, 0 -1px 0 #fff;
-}
+	.label {
+		font: 26px "Helvetica Neue", Helvetica, Arial, sans-serif;
+		text-anchor: middle;
+		text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff, 0 -1px 0 #fff;
+	}
 
-.label,
-.node--root,
-.node--leaf {
-  pointer-events: none;
+	.label,
+	.node--root,
+	.node--leaf {
+		pointer-events: none;
 
-}
+	}
 
-.hover-text{
-	font-size: 32px;
-	text-align: center;
-	text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff, 0 -1px 0 #fff;
-}
+	.hover-text{
+		font-size: 32px;
+		text-align: center;
+		text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff, 0 -1px 0 #fff;
+	}
 
-#bg {
-	background-color: #fff !important;
-}
+	#bg {
+		background-color: #fff !important;
+	}
 
-.node--root {
-	margin-top:-500px;
-}
+	.node--root {
+		margin-top:-500px;
+	}
 
-g {
-	margin-top: -200px;
-}
+	g {
+		margin-top: -200px;
+	}
 </style>
 <svg width="1400" height="1400" id="bg">
 
@@ -77,265 +77,314 @@ g {
 
 
 
-var foo = $.getJSON("kommuner.json", function(json) {
+	var foo = $.getJSON("kommuner.json", function(json) {
 
-var formatedJsonObject = 
-{ 
-  name : "Dalarna", 
-  color : "#fff", 
-  children : [] 
-};
+		var formatedJsonObject = 
+		{ 
+			name : "Dalarna", 
+			color : "#fff", 
+			children : [],
+			isRoot : true
+		};
 
-var currentRegion = "";
-var currentYear = 0;
-var currentYear = 0;
-var nameCounter = 0;
-var startCountingArrays = false;
-var currentArray = 0;
+		var currentRegion = "";
+		var currentYear = 0;
+		var currentYear = 0;
+		var nameCounter = 0;
+		var startCountingArrays = false;
+		var currentArray = 0;
 
-var regionArrayNumber = 0;
-var isBusyRegion = {};
-var isBusyYear = {};
-var categories = {};
+		var regionArrayNumber = 0;
+		var isBusyRegion = {};
+		var isBusyYear = {};
+		var categories = {};
 
 //this flag is true when we are zoomed in on last child object
 //so we can display onhover effects and know where to zoom out
 var flag = false;
+var showCircles = true;
 
 for(var i = 0; i < json.length; i++)
 {
-  if (!(json[i].Bransch in categories)) 
-  {
-  	categories[json[i].Bransch] = true;
-  }
-  
-  if (!(json[i].Region in isBusyRegion)) {
-  isBusyRegion[json[i].Region] = regionArrayNumber;
- 
-  formatedJsonObject.children.push(
-  {
-    name     : json[i].Region,
-    color    : "#fff",
-    children : []
-  });
-    
+	if (!(json[i].Bransch in categories)) 
+	{
+		categories[json[i].Bransch] = true;
+	}
 
-  if (!(json[i].År in isBusyYear)) 
-    {
-      isBusyYear[json[i].År] = true;
-    }
-    regionArrayNumber++;
-  };
+	if (!(json[i].Region in isBusyRegion)) {
+		isBusyRegion[json[i].Region] = regionArrayNumber;
+
+		formatedJsonObject.children.push(
+		{
+			name     : json[i].Region,
+			color    : "#fff",
+			children : []
+		});
 
 
-  
- }
+		if (!(json[i].År in isBusyYear)) 
+		{
+			isBusyYear[json[i].År] = true;
+		}
+		regionArrayNumber++;
+	};
 
- for(var i = 0; i < formatedJsonObject.children.length; i ++)
- {
-  for(var year in isBusyYear)
-  {
-    formatedJsonObject.children[i].children.push(
-    {
-      name     : year, 
-      color    : "#fff",
-      size     : 3000,
-      children : []
-    });
 
-    
-  }
+
+}
+
+for(var i = 0; i < formatedJsonObject.children.length; i ++)
+{
+	for(var year in isBusyYear)
+	{
+		formatedJsonObject.children[i].children.push(
+		{
+			name     : year, 
+			color    : "#fff",
+			size     : 3000,
+			children : []
+		});
+
+
+	}
 
 }
 
 for(var i = 0; i < formatedJsonObject.children.length; i++)
 {
-  for(var years = 0; years < formatedJsonObject.children[i].children.length; years++)
-  {
+	for(var years = 0; years < formatedJsonObject.children[i].children.length; years++)
+	{
 
-    for(var x = 0; x < json.length; x++)
-    {
-      if (formatedJsonObject.children[i].name == json[x].Region && formatedJsonObject.children[i].children[years].name  == json[x].År.toString()) 
-        {
-          formatedJsonObject.children[i].children[years].children.push({
-            name   : json[x].Bransch, 
-            size   : json[x].Värde, 
-            color  : json[x].Hex,
-            children : [],
-            isLast : true
-          });
-        };
-    }   
-  }
+		for(var x = 0; x < json.length; x++)
+		{
+			if (formatedJsonObject.children[i].name == json[x].Region && formatedJsonObject.children[i].children[years].name  == json[x].År.toString()) 
+			{
+				formatedJsonObject.children[i].children[years].children.push({
+					name   : json[x].Bransch, 
+					size   : json[x].Värde, 
+					color  : json[x].Hex,
+					children : [],
+					isLast : true
+				});
+			};
+		}   
+	}
 
 }
 
 //tooltop to display data on hover
 var tooltip = d3.select("body")
-    .append("div")
-    .style("position", "absolute")
-    .style("z-index", "10")
-    .style("visibility", "hidden")
-    .text("a simple tooltip");
+.append("div")
+.style("position", "absolute")
+.style("z-index", "10")
+.style("visibility", "hidden")
+.text("a simple tooltip");
 
 var svg = d3.select("svg"),
-    margin = 10,
-    diameter = 800,
-    g = svg.append("g").attr("transform", "translate(" + 650 + "," + 370 + ")");
-
-var jsonCircles = [
- { "x_axis": 60, "y_axis": 50, "radius": 3.5, "color" : "green" },
- { "x_axis": 60, "y_axis": 110, "radius": 7.437292357509746, "color" : "purple"},
- { "x_axis": 60, "y_axis": 175, "radius": 10.517919719324052, "color" : "red"},
- { "x_axis": 60, "y_axis": 250, "radius": 18.217571343799843, "color" : "red"},
-  { "x_axis": 60, "y_axis": 340, "radius": 25.38326219240313, "color" : "red"} ];
-
- var circles = svg.selectAll("circle")
-                .data(jsonCircles)
-                .enter()
-                .append("circle");
-
-                var circleAttributes = circles
-                      .attr("cx", function (d) { return d.x_axis; })
-                     .attr("cy", function (d) { return d.y_axis; })
-                      .attr("r", function (d) { return d.radius; })
-                      .attr("class", function() {return "sizeCircle"})
-                   .style("fill", function(d) { return d.color; });
+margin = 10,
+diameter = 800,
+g = svg.append("g").attr("transform", "translate(" + 650 + "," + 370 + ")");
 
 
+var showSizes = function(){
+	console.log("running showSizes");
+	console.log(showCircles);
+	if (showCircles) {
+		var jsonCircles = [
+		{ "x_axis": 60, "y_axis": 50, "radius": 3.5, "color" : "black", "text" : 100 },
+		{ "x_axis": 60, "y_axis": 110, "radius": 7.437292357509746, "color" : "black", "text" : 500},
+		{ "x_axis": 60, "y_axis": 175, "radius": 10.517919719324052, "color" : "black", "text" : 1000},
+		{ "x_axis": 60, "y_axis": 250, "radius": 18.217571343799843, "color" : "black", "text" : 3000},
+		{ "x_axis": 60, "y_axis": 340, "radius": 25.38326219240313, "color" : "black", "text" : 6000},
+		{ "x_axis": 1200, "y_axis": 340, "radius": 25.38326219240313, "color" : "black", "text" : 6000},
+
+
+
+		 ];
+
+		var circles = svg.selectAll("circle")
+		.data(jsonCircles)
+		.enter()
+		.append("circle");
+
+		var circleAttributes = circles
+		.attr("cx", function (d) { return d.x_axis; })
+		.attr("cy", function (d) { return d.y_axis; })
+		.attr("r", function (d) { return d.radius; })
+		.attr("class", function() {return "sizeCircle"})
+		.style("fill", function(d) { return d.color; });
+
+		var text = svg.selectAll("text")
+		.data(jsonCircles)
+		.enter()
+		.append("text");
+
+		var textLabels = text
+
+		.attr("x", function(d) {  return d.x_axis + 50; })
+		.attr("y", function(d) { return d.y_axis + 10; })
+		.text( function (d) { return d.text; })
+		.attr("font-family", "sans-serif")
+		.attr("font-size", "24px")
+		.attr("class", function() {return "sizeCircle"})
+		.attr("fill", "black");
+	}
+};
+showSizes();
 
 var color = d3.scaleLinear()
-    .domain([-1, 5])
-    .range(["hsl(152,80%,80%)", "hsl(228,30%,40%)"])
-    .interpolate(d3.interpolateHcl);
+.domain([-1, 5])
+.range(["hsl(152,80%,80%)", "hsl(228,30%,40%)"])
+.interpolate(d3.interpolateHcl);
 
 var pack = d3.pack()
-    .size([diameter - margin, diameter - margin])
-    .padding(2);
+.size([diameter - margin, diameter - margin])
+.padding(2);
 
 //d3.json("test.json", function(error, root) {
   //if (error) throw error;
   var root = formatedJsonObject;
   root = d3.hierarchy(root)
-      .sum(function(d) { return d.size; })
-      .sort(function(a, b) { return b.value - a.value; });
+  .sum(function(d) { return d.size; })
+  .sort(function(a, b) { return b.value - a.value; });
 
   var focus = root,
-      nodes = pack(root).descendants(),
-      view;1
+  nodes = pack(root).descendants(),
+  view;1
 
 
   var circle = g.selectAll("circle")
-    .data(nodes)
-    .enter().append("circle")
+  .data(nodes)
+  .enter().append("circle")
     //upda<te function in attr. to correspond to circle color?
-      .attr("class", function(d) {
-      	if (d.data.children && d.data.children.length < 1) {
-      		return "node-remover"
-      	}
-      	else if (d.data.children && d.data.children.length < 10) 
-      	{
-      		return "node--border"
-      	}
-        return d.parent ? d.children ? "node" : "node node--leaf" : "node node--root"; })
-       .style("fill", function(d) { return d.data.color; })
+    .attr("class", function(d) {
+    	if (d.data.children && d.data.children.length < 1) {
+    		return "node-remover"
+    	}
+    	else if (d.data.children && d.data.children.length < 10) 
+    	{
+    		return "node--border"
+    	}
+    	return d.parent ? d.children ? "node" : "node node--leaf" : "node node--root"; })
+    .style("fill", function(d) { return d.data.color; })
        //hover for labels
 
-       	.on("mouseover", function(d){
-       		if (d.data.isLast && flag) 
-       		{
-       			tooltip._groups[0][0].innerHTML = 
-       			"<p class='hover-text'>" + d.data.name + "<br/>" + d.data.size + "</p>";
-       			return tooltip.style("visibility", "visible");
-       		}
-      		
-       	})
-       	.on("mousemove", function(){return tooltip.style("top", (event.pageY-10)+"px").style("left",(event.pageX+10)+"px");})
-       		.on("mouseout", function(){return tooltip.style("visibility", "hidden");})
+       .on("mouseover", function(d){
+       	if (d.data.isLast && flag) 
+       	{
+       		tooltip._groups[0][0].innerHTML = 
+       		"<p class='hover-text'>" + d.data.name + "<br/>" + d.data.size + "</p>";
+       		return tooltip.style("visibility", "visible");
+       	}
+
+       })
+       .on("mousemove", function(){return tooltip.style("top", (event.pageY-10)+"px").style("left",(event.pageX+10)+"px");})
+       .on("mouseout", function(){return tooltip.style("visibility", "hidden");})
        		//end of hover for labels
-      
-      .on("click", function(d) {
 
-      	var all = document.getElementsByClassName("sizeCircle");
-      	for (var i = 0; i < all.length; i++) {
-  all[i].style.fill = 'blue';
-}
-      	if (d.data.isLast)
-      	{
-			
-			if (focus !== d && !flag){
-      			zoom(d.parent), d3.event.stopPropagation();
-      			flag = true;
-      			console.log("flag: " + flag);
-      			console.log("focus: " + focus!==d);
-      		}
+       		.on("click", function(d) {
+       			console.log();
+       			if (d.data.isRoot && d.data.isRoot == true) {
+       				var all = document.getElementsByClassName("sizeCircle");
+       				for (var i = 0; i < all.length; i++) {
+       					all[i].style.display = 'block';
+
+       				}
+       			}
+
+       			if (!(d.data.isRoot) || d.data.isRoot == false) {
+       				var all = document.getElementsByClassName("sizeCircle");
+       				for (var i = 0; i < all.length; i++) {
+       					all[i].style.display = 'none';
+
+       				}
+       			}
 
 
-      		else if (focus !== d && flag) {
-      			console.log("enter");
-      			zoom(d.parent.parent), d3.event.stopPropagation();
-      			flag = false;
-      		}
 
-      	
-      	}
-      	else if (!(d.data.isLast)) 
-      	{
-      		if (focus !== d) zoom(d), d3.event.stopPropagation();
-      		flag = false;
-      	}
-      	
-      	
-      });
+       			if (d.data.isLast)
+       			{
 
-  var text = g.selectAll("text")
-    .data(nodes)
-    .enter().append("text")
-      .attr("class", "label")
-      .style("fill-opacity", function(d) { return d.parent === root ? 1 : 0; })
-      .style("display", function(d) { return d.parent === root ? "inline" : "none"; })
-      .text(function(d) { 
-    	
-      	if (d.data.size == undefined && (!(d.data.isLast))) 
-      	{
-      		return d.data.name;
-      	}
-      	if ((d.data.isLast))
-      	{
-      		return;
-      	}
-      	return d.data.name; });
+       				if (focus !== d && !flag){
+       					zoom(d.parent), d3.event.stopPropagation();
+       					flag = true;
 
-  var node = g.selectAll("circle,text");
+       				}
 
-  svg
-      .style("background", color(-1))
-      .on("click", function() { zoom(root); });
 
-  zoomTo([root.x, root.y, root.r * 2 + margin]);
+       				else if (focus !== d && flag) {
+       					console.log("enter");
+       					zoom(d.parent.parent), d3.event.stopPropagation();
+       					flag = false;
+       				}
 
-  function zoom(d) {
-    var focus0 = focus; focus = d;
 
-    var transition = d3.transition()
-        .duration(d3.event.altKey ? 7500 : 750)
-        .tween("zoom", function(d) {
-          var i = d3.interpolateZoom(view, [focus.x, focus.y, focus.r * 2 + margin]);
-          return function(t) { zoomTo(i(t)); };
-        });
+       			}
+       			else if (!(d.data.isLast)) 
+       			{
+       				if (focus !== d) zoom(d), d3.event.stopPropagation();
+       				flag = false;
+       			}
 
-    transition.selectAll("text")
-      .filter(function(d) { return d.parent === focus || this.style.display === "inline"; })
-        .style("fill-opacity", function(d) { return d.parent === focus ? 1 : 0; })
-        .on("start", function(d) { if (d.parent === focus) this.style.display = "inline"; })
-        .on("end", function(d) { if (d.parent !== focus) this.style.display = "none"; });
-  }
 
-  function zoomTo(v) {
-    var k = diameter / v[2]; view = v;
-    node.attr("transform", function(d) { return "translate(" + (d.x - v[0]) * k + "," + (d.y - v[1]) * k + ")"; });
-    circle.attr("r", function(d) { return d.r * k; });
-  }
+       		});
+
+       		var text = g.selectAll("text")
+       		.data(nodes)
+       		.enter().append("text")
+       		.attr("class", "label")
+       		.style("fill-opacity", function(d) { return d.parent === root ? 1 : 0; })
+       		.style("display", function(d) { return d.parent === root ? "inline" : "none"; })
+       		.text(function(d) { 
+
+       			if (d.data.size == undefined && (!(d.data.isLast))) 
+       			{
+       				return d.data.name;
+       			}
+       			if ((d.data.isLast))
+       			{
+       				return;
+       			}
+       			return d.data.name; });
+
+       		var node = g.selectAll("circle,text");
+
+       		svg
+       		.style("background", color(-1))
+       		.on("click", function() { 
+       				var all = document.getElementsByClassName("sizeCircle");
+       				for (var i = 0; i < all.length; i++) {
+       					all[i].style.display = 'block';
+
+       				}
+       			zoom(root);
+
+       			 });
+
+       		zoomTo([root.x, root.y, root.r * 2 + margin]);
+
+       		function zoom(d) {
+       			var focus0 = focus; focus = d;
+
+       			var transition = d3.transition()
+       			.duration(d3.event.altKey ? 7500 : 750)
+       			.tween("zoom", function(d) {
+       				var i = d3.interpolateZoom(view, [focus.x, focus.y, focus.r * 2 + margin]);
+       				return function(t) { zoomTo(i(t)); };
+       			});
+
+       			transition.selectAll("text")
+       			.filter(function(d) { return d.parent === focus || this.style.display === "inline"; })
+       			.style("fill-opacity", function(d) { return d.parent === focus ? 1 : 0; })
+       			.on("start", function(d) { if (d.parent === focus) this.style.display = "inline"; })
+       			.on("end", function(d) { if (d.parent !== focus) this.style.display = "none"; });
+       		}
+
+       		function zoomTo(v) {
+       			var k = diameter / v[2]; view = v;
+       			node.attr("transform", function(d) { return "translate(" + (d.x - v[0]) * k + "," + (d.y - v[1]) * k + ")"; });
+       			circle.attr("r", function(d) { return d.r * k; });
+       		}
 //});//end of getjson
 
 
