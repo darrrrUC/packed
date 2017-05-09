@@ -191,12 +191,15 @@ var showSizes = function(){
 	console.log(showCircles);
 	if (showCircles) {
 		var jsonCircles = [
-		{ "x_axis": 60, "y_axis": 50, "radius": 3.5, "color" : "black", "text" : 100 },
-		{ "x_axis": 60, "y_axis": 110, "radius": 7.437292357509746, "color" : "black", "text" : 500},
-		{ "x_axis": 60, "y_axis": 175, "radius": 10.517919719324052, "color" : "black", "text" : 1000},
-		{ "x_axis": 60, "y_axis": 250, "radius": 18.217571343799843, "color" : "black", "text" : 3000},
-		{ "x_axis": 60, "y_axis": 340, "radius": 25.38326219240313, "color" : "black", "text" : 6000},
-		{ "x_axis": 1200, "y_axis": 340, "radius": 25.38326219240313, "color" : "black", "text" : 6000},
+		{ "x_axis": 60, "y_axis": 50, "radius": 3.5, "color" : "black", "text" : 100, "fontS" : 24 },
+		{ "x_axis": 60, "y_axis": 110, "radius": 7.437292357509746, "color" : "black", "text" : 500, "fontS" : 24},
+		{ "x_axis": 60, "y_axis": 175, "radius": 10.517919719324052, "color" : "black", "text" : 1000, "fontS" : 24},
+		{ "x_axis": 60, "y_axis": 250, "radius": 18.217571343799843, "color" : "black", "text" : 3000, "fontS" : 24},
+		{ "x_axis": 60, "y_axis": 340, "radius": 25.38326219240313, "color" : "black", "text" : 6000, "fontS" : 24},
+		{ "x_axis": 1050, "y_axis": 50, "radius": 20, "color" : "#000080", "text" : "Information och kommunikation", "fontS" : 20},
+		{ "x_axis": 1050, "y_axis": 110, "radius": 20, "color" : "#10d0fa", "text" : "Energi och miljö", "fontS" : 20},
+		{ "x_axis": 1050, "y_axis": 170, "radius": 20, "color" : "#FF8080", "text" : "Kultur, fritid och nöje", "fontS" : 20},
+		{ "x_axis": 1050, "y_axis": 230, "radius": 20, "color" : "#fcac34", "text" : "Offentlig förvaltning", "fontS" : 20},
 
 
 
@@ -225,7 +228,7 @@ var showSizes = function(){
 		.attr("y", function(d) { return d.y_axis + 10; })
 		.text( function (d) { return d.text; })
 		.attr("font-family", "sans-serif")
-		.attr("font-size", "24px")
+		.attr("font-size", function(d) {return d.fontS;})
 		.attr("class", function() {return "sizeCircle"})
 		.attr("fill", "black");
 	}
